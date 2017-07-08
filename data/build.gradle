@@ -1,5 +1,6 @@
 buildscript {
   repositories {
+    google()
     mavenCentral()
   }
   dependencies {
@@ -8,7 +9,6 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 android {

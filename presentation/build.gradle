@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 
 android {
   def globalConfiguration = rootProject.extensions.getByName("ext")
@@ -65,7 +66,7 @@ dependencies {
   compile project(':domain')
   compile project(':data')
 
-  apt presentationDependencies.daggerCompiler
+  kapt presentationDependencies.daggerCompiler
   compile presentationDependencies.dagger
   compile presentationDependencies.butterKnife
   compile presentationDependencies.recyclerView
