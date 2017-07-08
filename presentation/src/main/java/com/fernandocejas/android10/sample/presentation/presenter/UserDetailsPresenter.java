@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2015 Fernando Cejas Open Source Project
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,17 +16,17 @@
 package com.fernandocejas.android10.sample.presentation.presenter;
 
 import android.support.annotation.NonNull;
-import com.fernandocejas.android10.sample.domain.User;
+
 import com.fernandocejas.android10.sample.domain.exception.DefaultErrorBundle;
 import com.fernandocejas.android10.sample.domain.exception.ErrorBundle;
 import com.fernandocejas.android10.sample.domain.interactor.DefaultObserver;
-import com.fernandocejas.android10.sample.domain.interactor.GetUserDetails;
 import com.fernandocejas.android10.sample.domain.interactor.GetUserDetails.Params;
 import com.fernandocejas.android10.sample.presentation.exception.ErrorMessageFactory;
+import com.fernandocejas.android10.sample.presentation.interactor.UserDetailsInteractor;
 import com.fernandocejas.android10.sample.presentation.internal.di.PerActivity;
-import com.fernandocejas.android10.sample.presentation.mapper.UserModelDataMapper;
 import com.fernandocejas.android10.sample.presentation.model.UserModel;
 import com.fernandocejas.android10.sample.presentation.view.UserDetailsView;
+
 import javax.inject.Inject;
 
 /**
@@ -38,26 +38,25 @@ public class UserDetailsPresenter implements Presenter {
 
   private UserDetailsView viewDetailsView;
 
-  private final GetUserDetails getUserDetailsUseCase;
-  private final UserModelDataMapper userModelDataMapper;
+  private final UserDetailsInteractor userDetailsInteractor;
 
   @Inject
-  public UserDetailsPresenter(GetUserDetails getUserDetailsUseCase,
-      UserModelDataMapper userModelDataMapper) {
-    this.getUserDetailsUseCase = getUserDetailsUseCase;
-    this.userModelDataMapper = userModelDataMapper;
+  public UserDetailsPresenter(UserDetailsInteractor userDetailsInteractor) {
+    this.userDetailsInteractor = userDetailsInteractor;
   }
 
   public void setView(@NonNull UserDetailsView view) {
     this.viewDetailsView = view;
   }
 
-  @Override public void resume() {}
+  @Override public void resume() {
+  }
 
-  @Override public void pause() {}
+  @Override public void pause() {
+  }
 
   @Override public void destroy() {
-    this.getUserDetailsUseCase.dispose();
+    this.userDetailsInteractor.dispose();
     this.viewDetailsView = null;
   }
 
@@ -72,7 +71,7 @@ public class UserDetailsPresenter implements Presenter {
   }
 
   private void getUserDetails(int userId) {
-    this.getUserDetailsUseCase.execute(new UserDetailsObserver(), Params.forUser(userId));
+    this.userDetailsInteractor.execute(new UserDetailsObserver(), Params.forUser(userId));
   }
 
   private void showViewLoading() {
@@ -97,12 +96,11 @@ public class UserDetailsPresenter implements Presenter {
     this.viewDetailsView.showError(errorMessage);
   }
 
-  private void showUserDetailsInView(User user) {
-    final UserModel userModel = this.userModelDataMapper.transform(user);
-    this.viewDetailsView.renderUser(userModel);
+  private void showUserDetailsInView(UserModel model) {
+    this.viewDetailsView.renderUser(model);
   }
 
-  private final class UserDetailsObserver extends DefaultObserver<User> {
+  private final class UserDetailsObserver extends DefaultObserver<UserModel> {
 
     @Override public void onComplete() {
       UserDetailsPresenter.this.hideViewLoading();
@@ -114,8 +112,8 @@ public class UserDetailsPresenter implements Presenter {
       UserDetailsPresenter.this.showViewRetry();
     }
 
-    @Override public void onNext(User user) {
-      UserDetailsPresenter.this.showUserDetailsInView(user);
+    @Override public void onNext(UserModel model) {
+      UserDetailsPresenter.this.showUserDetailsInView(model);
     }
   }
 }

@@ -16,17 +16,20 @@
 package com.fernandocejas.android10.sample.test.presenter;
 
 import android.content.Context;
+
 import com.fernandocejas.android10.sample.domain.interactor.GetUserDetails;
 import com.fernandocejas.android10.sample.domain.interactor.GetUserDetails.Params;
-import com.fernandocejas.android10.sample.presentation.mapper.UserModelDataMapper;
+import com.fernandocejas.android10.sample.presentation.interactor.UserDetailsInteractor;
 import com.fernandocejas.android10.sample.presentation.presenter.UserDetailsPresenter;
 import com.fernandocejas.android10.sample.presentation.view.UserDetailsView;
-import io.reactivex.observers.DisposableObserver;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import io.reactivex.observers.DisposableObserver;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
@@ -42,11 +45,11 @@ public class UserDetailsPresenterTest {
   @Mock private Context mockContext;
   @Mock private UserDetailsView mockUserDetailsView;
   @Mock private GetUserDetails mockGetUserDetails;
-  @Mock private UserModelDataMapper mockUserModelDataMapper;
+  @Mock private UserDetailsInteractor mockInteractor;
 
   @Before
   public void setUp() {
-    userDetailsPresenter = new UserDetailsPresenter(mockGetUserDetails, mockUserModelDataMapper);
+    userDetailsPresenter = new UserDetailsPresenter(mockInteractor);
     userDetailsPresenter.setView(mockUserDetailsView);
   }
 
